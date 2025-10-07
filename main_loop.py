@@ -12,9 +12,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill('brown')
+    screen.fill('blue')
 
     pygame.draw.circle(screen, "red", player_pos, 40)
+
+    pygame.draw.rect(screen, "black", [200, 300, 100, 20], 2)
+    pygame.draw.rect(screen, "black", [800, 300, 100, 20], 2)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
