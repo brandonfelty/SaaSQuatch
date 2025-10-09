@@ -18,9 +18,9 @@ while running:
             running = False
 
     screen.fill('blue')
-    pygame.draw.circle(screen, "red", player_pos, player_height)
-    pygame.draw.rect(screen, "black", [200, 300, 100, 20], 2)
-    pygame.draw.rect(screen, "black", [800, 300, 100, 20], 2)
+    player_cir = pygame.draw.circle(screen, "red", player_pos, player_height)
+    obstacle_1 = pygame.draw.rect(screen, "black", [200, 300, 100, 20], 2)
+    obstacle_2 = pygame.draw.rect(screen, "black", [800, 300, 100, 20], 2)
     pygame.draw.line(
         screen, "green",
         [0, screen.get_height() - ground_level],
@@ -45,6 +45,9 @@ while running:
 
     if player_pos.y >= screen.get_height() - ground_level - player_height:
         player_pos.y = screen.get_height() - ground_level - player_height
+        y_velocity = 0
+    
+    if player_cir.colliderect(obstacle_1) or player_cir.colliderect(obstacle_2):
         y_velocity = 0
 
     pygame.display.flip()
