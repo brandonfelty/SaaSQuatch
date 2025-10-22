@@ -1,7 +1,10 @@
 import pygame
+from sprites.spritesheet import SpriteSheet
 
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+DISPLAY_W, DISPLAY_Y = 1280, 720
+canvas = pygame.Surface((DISPLAY_W, DISPLAY_Y))
+screen = pygame.display.set_mode((DISPLAY_W, DISPLAY_Y))
 clock = pygame.time.Clock()
 running = True
 dt = 0
@@ -12,21 +15,30 @@ ground_level = 100
 player_height = 40
 player_pos = pygame.Vector2(200, ground_level)
 
+idle_spritesheet = SpriteSheet('sprites/Idle.png')
+hiker = idle_spritesheet.get_sprite(0,0,128,128)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    screen.fill('blue')
-    player_cir = pygame.draw.circle(screen, "red", player_pos, player_height)
-    obstacle_1 = pygame.draw.rect(screen, "black", [200, 300, 100, 20], 2)
-    obstacle_2 = pygame.draw.rect(screen, "black", [800, 300, 100, 20], 2)
-    pygame.draw.line(
-        screen, "green",
-        [0, screen.get_height() - ground_level],
-        [screen.get_width(), screen.get_height() - ground_level],
-        4
-    )
+    canvas.fill((255,255,255))
+    canvas.blit(hiker, (0, DISPLAY_Y - 128))
+    screen.blit(canvas, (0,0))
+    pygame.display.update()
+
+    # screen.fill('blue')
+    # hiker = canvas.blit
+    # player_cir = pygame.draw.circle(screen, "red", player_pos, player_height)
+    # obstacle_1 = pygame.draw.rect(screen, "black", [200, 300, 100, 20], 2)
+    # obstacle_2 = pygame.draw.rect(screen, "black", [800, 300, 100, 20], 2)
+    # pygame.draw.line(
+    #     screen, "green",
+    #     [0, screen.get_height() - ground_level],
+    #     [screen.get_width(), screen.get_height() - ground_level],
+    #     4
+    # )
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RIGHT]:
@@ -47,8 +59,8 @@ while running:
         player_pos.y = screen.get_height() - ground_level - player_height
         y_velocity = 0
     
-    if player_cir.colliderect(obstacle_1) or player_cir.colliderect(obstacle_2):
-        y_velocity = 0
+    # if player_cir.colliderect(obstacle_1) or player_cir.colliderect(obstacle_2):
+    #     y_velocity = 0
 
     pygame.display.flip()
 

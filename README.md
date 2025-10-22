@@ -8,3 +8,6 @@
 
 ## Run
 - from root folder run, ```python main_loop.py```
+
+### Credits
+- [Chroma Dav for the Pixel Art Hiker](https://chroma-dave.itch.io/pixelart-hiker)
