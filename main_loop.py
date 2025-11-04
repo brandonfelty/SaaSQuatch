@@ -15,18 +15,32 @@ ground_level = 100
 player_height = 40
 player_pos = pygame.Vector2(200, ground_level)
 
-idle_spritesheet = SpriteSheet('sprites/Idle.png')
-hiker = idle_spritesheet.get_sprite(0,0,128,128)
+idle_spritesheet = SpriteSheet('sprites/Idle')
+idle_hiker = [
+    idle_spritesheet.parse_sprite('idle_hiker_1'),
+    idle_spritesheet.parse_sprite('idle_hiker_2'),
+    idle_spritesheet.parse_sprite('idle_hiker_3'),
+    idle_spritesheet.parse_sprite('idle_hiker_4'),
+    idle_spritesheet.parse_sprite('idle_hiker_5'),
+    idle_spritesheet.parse_sprite('idle_hiker_6')
+]
+
+run_spritesheet = SpriteSheet('sprites/Run')
+run_hiker = [
+    run_spritesheet.parse_sprite('run_hiker_1'),
+    run_spritesheet.parse_sprite('run_hiker_2'),
+    run_spritesheet.parse_sprite('run_hiker_3'),
+    run_spritesheet.parse_sprite('run_hiker_4'),
+    run_spritesheet.parse_sprite('run_hiker_5'),
+    run_spritesheet.parse_sprite('run_hiker_6')
+]
+
+index = 0
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    canvas.fill((255,255,255))
-    canvas.blit(hiker, (0, DISPLAY_Y - 128))
-    screen.blit(canvas, (0,0))
-    pygame.display.update()
 
     # screen.fill('blue')
     # hiker = canvas.blit
@@ -52,6 +66,9 @@ while running:
     if keys[pygame.K_SPACE] and y_velocity == 0:
         y_velocity = -jump_strength
     
+    if keys[pygame.K_0]:
+        index = (index + 1) % len(idle_hiker)
+    
     y_velocity += gravity
     player_pos.y += y_velocity
 
@@ -62,6 +79,11 @@ while running:
     # if player_cir.colliderect(obstacle_1) or player_cir.colliderect(obstacle_2):
     #     y_velocity = 0
 
+    canvas.fill((255,255,255))
+    canvas.blit(idle_hiker[index], (0, DISPLAY_Y - 128))
+    canvas.blit(run_hiker[index], (64, DISPLAY_Y - 128))
+    screen.blit(canvas, (0,0))
+    pygame.display.update()
     pygame.display.flip()
 
     dt = clock.tick(60) / 1000
