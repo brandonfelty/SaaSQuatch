@@ -13,6 +13,7 @@ jump_strength = 20
 gravity = 0.5
 ground_level = 100
 player_height = 40
+player_speed = 5
 player_pos = pygame.Vector2(200, ground_level)
 
 idle_spritesheet = SpriteSheet('sprites/Idle')
@@ -35,12 +36,24 @@ run_hiker = [
     run_spritesheet.parse_sprite('run_hiker_6')
 ]
 
-index = 0
+current_idle_index = 0
+current_run_index = 0
+animation_timer = 0
+animation_speed = 100
 
 while running:
+    dt = clock.tick(60)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    animation_timer += dt
+
+    if animation_timer >= animation_speed:
+        animation_timer = 0
+        current_idle_index = (current_idle_index + 1) % len(idle_hiker)
+        current_run_index = (current_run_index + 1) % len(run_hiker)
 
     # screen.fill('blue')
     # hiker = canvas.blit
@@ -54,20 +67,22 @@ while running:
     #     4
     # )
 
+    animation = 'idle'
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RIGHT]:
-        player_pos.x += 300 * dt
+        player_pos.x += player_speed
+        animation = 'running'
     if keys[pygame.K_LEFT]:
-        player_pos.x -= 300 * dt
+        player_pos.x -= player_speed
+        animation = 'running'
     if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
+        player_pos.x -= player_speed
+        animation = 'running'
     if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+        player_pos.x += player_speed
+        animation = 'running'
     if keys[pygame.K_SPACE] and y_velocity == 0:
         y_velocity = -jump_strength
-    
-    if keys[pygame.K_0]:
-        index = (index + 1) % len(idle_hiker)
     
     y_velocity += gravity
     player_pos.y += y_velocity
@@ -79,13 +94,18 @@ while running:
     # if player_cir.colliderect(obstacle_1) or player_cir.colliderect(obstacle_2):
     #     y_velocity = 0
 
+    current_player_image = idle_hiker[current_idle_index]
+    if animation == 'running':
+        current_player_image = run_hiker[current_run_index]
+
     canvas.fill((255,255,255))
-    canvas.blit(idle_hiker[index], (0, DISPLAY_Y - 128))
-    canvas.blit(run_hiker[index], (64, DISPLAY_Y - 128))
+    canvas.blit(current_player_image, (player_pos.x, player_pos.y))
+    
+    
     screen.blit(canvas, (0,0))
     pygame.display.update()
     pygame.display.flip()
 
-    dt = clock.tick(60) / 1000
+    
 
 pygame.quit()
