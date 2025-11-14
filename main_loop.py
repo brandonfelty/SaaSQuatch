@@ -2,19 +2,26 @@ import pygame
 from sprites.spritesheet import SpriteSheet
 
 pygame.init()
-DISPLAY_W, DISPLAY_Y = 1280, 720
+DISPLAY_W, DISPLAY_Y = 640, 640
 canvas = pygame.Surface((DISPLAY_W, DISPLAY_Y))
 screen = pygame.display.set_mode((DISPLAY_W, DISPLAY_Y))
 clock = pygame.time.Clock()
 running = True
 dt = 0
 y_velocity = 0
-jump_strength = 20
+jump_strength = 5
 gravity = 0.5
 ground_level = 100
 player_height = 40
 player_speed = 5
 player_pos = pygame.Vector2(200, ground_level)
+
+try:
+    background_image = pygame.image.load('pixel-mountain.png').convert()
+except pygame.error as e:
+    print(f"Error loading image: {e}")
+    pygame.quit()
+    exit()
 
 idle_spritesheet = SpriteSheet('sprites/Idle')
 idle_hiker = [
@@ -36,8 +43,22 @@ run_hiker = [
     run_spritesheet.parse_sprite('run_hiker_6')
 ]
 
+flying_spritesheet = SpriteSheet('sprites/Flying')
+flying_hiker = [
+    flying_spritesheet.parse_sprite('flying_hiker_1'),
+    flying_spritesheet.parse_sprite('flying_hiker_2')
+]
+
+jumping_spritesheet = SpriteSheet('sprites/Jump')
+jumping_hiker = [
+    jumping_spritesheet.parse_sprite('jump_hiker_1'),
+    jumping_spritesheet.parse_sprite('jump_hiker_2')
+]
+
 current_idle_index = 0
 current_run_index = 0
+current_flying_index = 0
+current_jump_index = 0
 animation_timer = 0
 animation_speed = 100
 
@@ -54,6 +75,8 @@ while running:
         animation_timer = 0
         current_idle_index = (current_idle_index + 1) % len(idle_hiker)
         current_run_index = (current_run_index + 1) % len(run_hiker)
+        current_flying_index = (current_flying_index + 1) % len(flying_hiker)
+        current_jump_index = (current_jump_index + 1) % len(jumping_hiker)
 
     # screen.fill('blue')
     # hiker = canvas.blit
@@ -97,15 +120,18 @@ while running:
     current_player_image = idle_hiker[current_idle_index]
     if animation == 'running':
         current_player_image = run_hiker[current_run_index]
+    if y_velocity > 0:
+        current_player_image = flying_hiker[current_flying_index]
+    if y_velocity < 0:
+        current_player_image = jumping_hiker[current_jump_index]
 
-    canvas.fill((255,255,255))
+    canvas.blit(background_image, (0,0))
     canvas.blit(current_player_image, (player_pos.x, player_pos.y))
     
     
     screen.blit(canvas, (0,0))
     pygame.display.update()
     pygame.display.flip()
-
     
 
 pygame.quit()
