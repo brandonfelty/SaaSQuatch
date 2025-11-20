@@ -9,12 +9,12 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 y_velocity = 0
-jump_strength = 5
+jump_strength = 6
 gravity = 0.5
 ground_level = 100
 player_height = 40
-player_speed = 5
-player_pos = pygame.Vector2(200, ground_level)
+player_speed = 2
+player_pos = pygame.Vector2(0,0)
 
 try:
     background_image = pygame.image.load('pixel-mountain.png').convert()
@@ -61,6 +61,7 @@ current_flying_index = 0
 current_jump_index = 0
 animation_timer = 0
 animation_speed = 100
+zoom_factor = 2.5
 
 while running:
     dt = clock.tick(60)
@@ -125,9 +126,19 @@ while running:
     if y_velocity < 0:
         current_player_image = jumping_hiker[current_jump_index]
 
-    canvas.blit(background_image, (0,0))
-    canvas.blit(current_player_image, (player_pos.x, player_pos.y))
+    new_width = int(background_image.get_width() * zoom_factor)
+    new_height = int(background_image.get_height() * zoom_factor)
+    zoomed_background = pygame.transform.smoothscale(background_image, (new_width, new_height))
+    # offset_x = (new_width - DISPLAY_W) // 2
+    # offset_y = (new_height - DISPLAY_Y) // 2
+    offset_x = player_pos.x
+    offset_y = player_pos.y
     
+    player_width = current_player_image.get_width() * 2
+    player_height = current_player_image.get_height() * 2
+    scaled_current_player = pygame.transform.scale(current_player_image, (player_width, player_height))
+    canvas.blit(zoomed_background, (-offset_x, -offset_y))
+    canvas.blit(scaled_current_player, (player_pos.x, player_pos.y))
     
     screen.blit(canvas, (0,0))
     pygame.display.update()
